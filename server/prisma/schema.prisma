@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id          Int       @id @default(autoincrement())
+  name        String
+  website     String?
+  description String?
+  campaigns   Campaign[]
+  reviews     Review[]
+  createdAt   DateTime  @default(now())
+}
+
+model Campaign {
+  id           Int           @id @default(autoincrement())
+  company      Company       @relation(fields: [companyId], references: [id])
+  companyId    Int
+  title        String
+  payoutMin    Float
+  payoutMax    Float
+  currency     String
+  platforms    Json
+  requirements String?
+  deadline     DateTime?
+  location     String?
+  tags         Json?
+  applications Application[]
+  createdAt    DateTime      @default(now())
+}
+
+model Creator {
+  id            Int           @id @default(autoincrement())
+  username      String        @unique
+  email         String        @unique
+  passwordHash  String
+  about         String?       
+  applications  Application[]
+  reviews       Review[]
+  createdAt     DateTime      @default(now())
+}
+
+model Application {
+  id          Int       @id @default(autoincrement())
+  creator     Creator   @relation(fields: [creatorId], references: [id])
+  creatorId   Int
+  campaign    Campaign  @relation(fields: [campaignId], references: [id])
+  campaignId  Int
+  status      String    @default("pending")
+  appliedAt   DateTime  @default(now())
+}
+
+model Review {
+  id          Int       @id @default(autoincrement())
+  creator     Creator   @relation(fields: [creatorId], references: [id])
+  creatorId   Int
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   Int
+  rating      Int
+  comment     String?
+  createdAt   DateTime  @default(now())
+}
