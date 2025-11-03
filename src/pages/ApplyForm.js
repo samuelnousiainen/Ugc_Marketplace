@@ -23,7 +23,7 @@ export default function ApplyForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // replace with real submit logic (API call)
+    // replace with real submit logic as needed
     console.log("Application submitted for job:", job.id, form);
     alert("Application submitted. Thank you!");
     navigate(-1); 

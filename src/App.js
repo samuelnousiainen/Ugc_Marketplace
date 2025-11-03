@@ -4,6 +4,8 @@ import NavBar from "./components/NavBar";
 import SideBar from "./components/SideBar";
 import JobDetails from "./components/JobDetails";
 import ApplyForm from "./pages/ApplyForm";
+import Login from "./pages/Login";
+import You from "./pages/You";
 import JobData from "./JobData.json";
 import "./App.css";
 
@@ -16,7 +18,7 @@ function App() {
   return (
     <BrowserRouter>
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <NavBar />
+        <NavBar onHome={() => setSelectedJob(null)} />
 
         <div style={{ display: "flex", flex: 1, overflow: "hidden", minHeight: 0 }}>
           <aside
@@ -35,8 +37,9 @@ function App() {
           <main className="main-content" style={{ flex: 1, padding: 24, minWidth: 0, minHeight: 0, overflow: "auto" }}>
             <Routes>
               <Route path="/" element={<JobDetails job={selectedJob} />} />
-
               <Route path="/apply/:id" element={<ApplyForm />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/you" element={<You />} />
             </Routes>
           </main>
         </div>
