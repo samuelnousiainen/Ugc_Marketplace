@@ -6,7 +6,6 @@ export default function ApplyForm() {
   const navigate = useNavigate();
   const params = useParams();
 
-  // try to get job from location.state, fallback to params.id
   const job = location.state?.job || { id: params.id, title: "" };
 
   const [form, setForm] = useState({
@@ -27,7 +26,7 @@ export default function ApplyForm() {
     // replace with real submit logic (API call)
     console.log("Application submitted for job:", job.id, form);
     alert("Application submitted. Thank you!");
-    navigate(-1); // go back to previous page
+    navigate(-1); 
   }
 
   return (
