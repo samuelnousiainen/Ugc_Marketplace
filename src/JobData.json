@@ -1,0 +1,112 @@
+[
+    {
+        "id": 1,
+        "title": "Frontend Engineer",
+        "company": "Aurora Labs",
+        "description": "Build responsive web interfaces using React, optimize performance and collaborate with design.",
+        "salary": 65000,
+        "tags": ["javascript", "react", "css", "frontend"],
+        "location": "Helsinki, Finland",
+        "datePosted": "2025-10-18",
+        "pay": "per year"
+    },
+    {
+        "id": 2,
+        "title": "Backend Developer",
+        "company": "Northwind Systems",
+        "description": "Design and implement RESTful APIs, maintain database schema and ensure reliable deployments.",
+        "salary": 72000,
+        "tags": ["nodejs", "postgresql", "api", "docker"],
+        "location": "Espoo, Finland",
+        "datePosted": "2025-10-20",
+        "pay": "per year"
+    },
+    {
+        "id": 3,
+        "title": "Data Analyst",
+        "company": "Insight Analytics",
+        "description": "Analyze business data, create dashboards and deliver actionable insights to stakeholders.",
+        "salary": 48000,
+        "tags": ["sql", "tableau", "python", "etl"],
+        "location": "Tampere, Finland",
+        "datePosted": "2025-10-15",
+        "pay": "per year"
+    },
+    {
+        "id": 4,
+        "title": "Mobile App Developer",
+        "company": "PocketWorks",
+        "description": "Develop and maintain cross-platform mobile apps with Flutter, write unit and integration tests.",
+        "salary": 60000,
+        "tags": ["flutter", "dart", "mobile", "ci/cd"],
+        "location": "Oulu, Finland",
+        "datePosted": "2025-10-10",
+        "pay": "per year"
+    },
+    {
+        "id": 5,
+        "title": "DevOps Engineer",
+        "company": "Cloud Harbor",
+        "description": "Automate infrastructure, manage CI/CD pipelines and monitor production systems.",
+        "salary": 78000,
+        "tags": ["kubernetes", "terraform", "aws", "ci/cd"],
+        "location": "Remote",
+        "datePosted": "2025-10-21",
+        "pay": "per year"
+    },
+    {
+        "id": 6,
+        "title": "UX Designer",
+        "company": "Pixel & Co",
+        "description": "Lead user research, create wireframes and prototypes, and collaborate closely with engineers.",
+        "salary": 52000,
+        "tags": ["ux", "figma", "research", "prototyping"],
+        "location": "Helsinki, Finland",
+        "datePosted": "2025-10-19",
+        "pay": "per year"
+    },
+    {
+        "id": 7,
+        "title": "QA Engineer (Contract)",
+        "company": "TestRight",
+        "description": "Write automated tests, perform manual testing and validate release quality on a contract basis.",
+        "salary": 35,
+        "tags": ["testing", "selenium", "automation", "manual"],
+        "location": "Turku, Finland",
+        "datePosted": "2025-10-22",
+        "pay": "per hour"
+    },
+    {
+        "id": 8,
+        "title": "Product Manager",
+        "company": "MarketMinds",
+        "description": "Define product roadmap, coordinate cross-functional teams and measure product success.",
+        "salary": 9000,
+        "tags": ["product", "roadmap", "stakeholders", "analytics"],
+        "location": "Vantaa, Finland",
+        "datePosted": "2025-10-12",
+        "pay": "per month"
+    },
+    {
+        "id": 9,
+        "title": "Machine Learning Engineer",
+        "company": "DeepCore",
+        "description": "Develop ML models, productionize pipelines and optimize inference performance.",
+        "salary": 95000,
+        "tags": ["python", "tensorflow", "mlops", "modeling"],
+        "location": "Espoo, Finland",
+        "datePosted": "2025-10-17",
+        "pay": "per year"
+    },
+    {
+        "id": 10,
+        "title": "Customer Success Specialist",
+        "company": "ClientFirst",
+        "description": "Support customers with onboarding, maintain satisfaction metrics and drive retention.",
+        "salary": 42000,
+        "tags": ["customer-success", "onboarding", "crm", "support"],
+        "location": "Remote",
+        "datePosted": "2025-10-14",
+        "pay": "per year"
+    }
+]

@@ -1,38 +1,181 @@
-.App {
-  text-align: center;
+:root {
+  --bg-dark: #060606;
+  --accent: #e54666;
+  --mid: #666666;
+  --white: #FFFFFF;
+  --btn-color: #e54666; /* use this for all buttons */
+  --card-shadow: 0 6px 16px rgba(13,13,13,0.12);
+  --card-shadow-hover: 0 14px 36px rgba(13,13,13,0.18);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* reset / base */
+html,body,#root { height:100%; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg-dark);
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Nav/header */
+.navbar, .App-header {
+  background: var(--bg-dark);
+  color: var(--white);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* navbar: fixed height so logo can match it */
+.navbar {
+  height: 64px;               /* adjust if you use a different NAV_HEIGHT */
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  box-sizing: border-box;
+  background: var(--bg-dark);
+  color: var(--white);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+/* inner wrapper (optional) */
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* make logo the full height of the navbar */
+.navbar-logo {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+
+/* main row / content area */
+.app-main {
+  background: var(--bg-dark);
+  display: flex;
+  flex: 1;
+  min-height: 0; /* allow children to be clipped */
+}
+
+/* sidebar */
+.sidebar {
+  background: #090909;
+  color: var(--mid);
+  box-shadow: none;
+  border-right: 1px solid #e6e6e6;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+}
+
+/* sidebar title */
+.sidebar-title {
+  color: var(--bg-dark);
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+/* the scrollable list inside sidebar */
+.sidebar-list {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  padding-right: 0.25rem; /* room for scrollbar */
+  display: grid;
+  gap: 0.5rem;
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg-dark);
+
+  /* WebKit / Chromium */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent), var(--btn-color));
+    border-radius: 8px;
+    border: 2px solid rgba(0,0,0,0.12);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    filter: brightness(0.95);
+  }
+}
+
+/* job card visuals — make them "stick out" */
+.job-card {
+  background: var(--bg-dark);
+  border-radius: 10px;
+  padding: 0.6rem;
+  display: flex;
+  gap: 0.75rem;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(13,13,13,0.04);
+  will-change: transform;
+  outline: none;
+}
+.job-card:focus,
+.job-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--card-shadow-hover);
 }
 
-.App-link {
-  color: #61dafb;
+/* compact image and layout */
+.job-card-image {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #393636;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* card text */
+.job-card-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 0.95rem;
+  line-height: 1.1;
+}
+.job-card-desc {
+  margin: 0.25rem 0 0 0;
+  color: var(--mid);
+  font-size: 0.85rem;
+}
+
+/* job details apply button */
+.apply-button, .btn-accent {
+  background: var(--btn-color);
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.apply-button:hover {
+  filter: brightness(0.95);
+}
+
+/* make main content area visually match the dark background */
+.main-content {
+  background: var(--bg-dark);
+  padding: 24px;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  color: var(--white);
 }
