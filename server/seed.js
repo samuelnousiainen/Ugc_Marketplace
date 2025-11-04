@@ -1,4 +1,5 @@
 require("dotenv").config({ path: __dirname + "/.env" });
+const bcrypt = require("bcrypt");
 const prisma = require("./prismaClient");
 
 async function seed() {
@@ -10,70 +11,16 @@ async function seed() {
     await prisma.creator.deleteMany();
     await prisma.company.deleteMany();
 
-    console.log("Creating companies + campaigns...");
-    const company1 = await prisma.company.create({
-      data: {
-        name: "Northwind Systems",
-        website: "https://northwind.example",
-        description: "Enterprise software and cloud solutions.",
-        campaigns: {
-          create: [
-            {
-              title: "Backend Developer",
-              payoutMin: 50000,
-              payoutMax: 90000,
-              currency: "EUR",
-              platforms: ["youtube", "tiktok"],
-              requirements: "Experience with Node.js and databases",
-              location: "Espoo, Finland",
-              tags: ["nodejs", "backend", "remote"],
-            },
-            {
-              title: "Frontend Developer",
-              payoutMin: 45000,
-              payoutMax: 80000,
-              currency: "EUR",
-              platforms: ["instagram"],
-              requirements: "React + TypeScript experience",
-              location: "Helsinki, Finland",
-              tags: ["react", "frontend"],
-            },
-          ],
-        },
-      },
-      include: { campaigns: true },
-    });
-
-    const company2 = await prisma.company.create({
-      data: {
-        name: "Aurora Media",
-        website: "https://auroramedia.example",
-        description: "Creative agency focused on social-first campaigns.",
-        campaigns: {
-          create: [
-            {
-              title: "Content Creator for Instagram",
-              payoutMin: 800,
-              payoutMax: 2500,
-              currency: "EUR",
-              platforms: ["instagram"],
-              requirements: "Strong visual storytelling",
-              deadline: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // +30 days
-              location: "Remote",
-              tags: ["creator", "instagram"],
-            },
-          ],
-        },
-      },
-      include: { campaigns: true },
-    });
+    // Create hashed passwords
+    const alicePassword = await bcrypt.hash("alice123", 10);
+    const bobPassword = await bcrypt.hash("bob123", 10);
 
     console.log("Creating creators (users)...");
     const alice = await prisma.creator.create({
       data: {
         username: "alice",
         email: "alice@example.com",
-        passwordHash: "hashed-password-alice",
+        passwordHash: alicePassword,
         about: "Developer and content creator focused on backend systems.",
       },
     });
@@ -82,51 +29,144 @@ async function seed() {
       data: {
         username: "bob",
         email: "bob@example.com",
-        passwordHash: "hashed-password-bob",
+        passwordHash: bobPassword,
         about: "Front-end engineer and part-time creator.",
       },
     });
 
-    console.log("Creating applications and reviews...");
-    // apply alice to Northwind backend campaign
-    await prisma.application.create({
+    console.log("Creating companies with websites...");
+    const maybelline = await prisma.company.create({
       data: {
-        creatorId: alice.id,
-        campaignId: company1.campaigns[0].id,
-        status: "pending",
+        name: "Maybelline Finland",
+        website: "https://www.maybelline.fi/tietoa-meista",
+        description: "Enterprise software and cloud solutions.",
       },
     });
 
-    // bob applies to Aurora campaign
-    const auroraCampaignId = company2.campaigns[0].id;
+    const shook = await prisma.company.create({
+      data: {
+        name: "Shook Digital",
+        website: "https://shook.digital",
+        description: "Digital marketing and content creation agency.",
+      },
+    });
+
+    const nokia = await prisma.company.create({
+      data: {
+        name: "Nokia",
+        website: "https://www.nokia.com/we-are-nokia/",
+        description: "Finland's leading telecommunications company.",
+      },
+    });
+
+    const pastDate = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30); // 30 days ago
+    const futureDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30); // 30 days from now
+
+    console.log("Creating campaigns...");
+    const campaign1 = await prisma.campaign.create({
+      data: {
+        companyId: maybelline.id,
+        title: "Backend Developer Campaign",
+        payoutMin: 50000,
+        payoutMax: 90000,
+        currency: "EUR",
+        platforms: ["LinkedIn", "GitHub"],
+        requirements: "5+ years Node.js experience",
+        location: "Helsinki, Finland",
+        tags: ["backend", "nodejs", "remote-ok"],
+        deadline: futureDate,
+      },
+    });
+
+    const campaign2 = await prisma.campaign.create({
+      data: {
+        companyId: shook.id,
+        title: "Social Media Campaign",
+        payoutMin: 2000,
+        payoutMax: 5000,
+        currency: "EUR",
+        platforms: ["Instagram", "TikTok"],
+        requirements: "Min 10k followers, engagement rate > 3%",
+        location: "Remote",
+        tags: ["social-media", "content-creation"],
+        deadline: pastDate, 
+      },
+    });
+
+    const campaign3 = await prisma.campaign.create({
+      data: {
+        companyId: nokia.id,
+        title: "Frontend Developer",
+        payoutMin: 45000,
+        payoutMax: 75000,
+        currency: "EUR",
+        platforms: ["LinkedIn"],
+        requirements: "React expertise required",
+        location: "Espoo, Finland",
+        tags: ["frontend", "react", "typescript"],
+        deadline: futureDate, 
+      },
+    });
+
+    console.log("Creating applications (campaign-creator connections)...");
+    // Alice applies to backend and frontend roles
     await prisma.application.create({
       data: {
-        creatorId: bob.id,
-        campaignId: auroraCampaignId,
+        creatorId: alice.id,
+        campaignId: campaign1.id,
         status: "accepted",
       },
     });
 
-    // reviews
+    await prisma.application.create({
+      data: {
+        creatorId: alice.id,
+        campaignId: campaign3.id,
+        status: "pending",
+      },
+    });
+
+    // Bob applies to social media and frontend roles
+    await prisma.application.create({
+      data: {
+        creatorId: bob.id,
+        campaignId: campaign2.id,
+        status: "accepted",
+      },
+    });
+
+    await prisma.application.create({
+      data: {
+        creatorId: bob.id,
+        campaignId: campaign3.id,
+        status: "rejected",
+      },
+    });
+
+    console.log("Creating reviews...");
     await prisma.review.create({
       data: {
         creatorId: alice.id,
-        companyId: company2.id,
+        companyId: maybelline.id,
         rating: 5,
-        comment: "Great and fast communication.",
+        comment: "Great company to work with!",
       },
     });
 
     await prisma.review.create({
       data: {
         creatorId: bob.id,
-        companyId: company1.id,
+        companyId: shook.id,
         rating: 4,
-        comment: "Good brief, payment on time.",
+        comment: "Good communication and fair compensation.",
       },
     });
 
-    console.log("Seeding finished.");
+    console.log("\nTest credentials:");
+    console.log("Alice - email: alice@example.com, password: alice123");
+    console.log("Bob - email: bob@example.com, password: bob123");
+
+    console.log("\nSeeding finished successfully!");
     process.exit(0);
   } catch (err) {
     console.error("Seed error:", err);
