@@ -35,11 +35,11 @@ async function seed() {
     });
 
     console.log("Creating companies with websites...");
-    const maybelline = await prisma.company.create({
+    const swettybetty = await prisma.company.create({
       data: {
-        name: "Maybelline Finland",
-        website: "https://www.maybelline.fi/tietoa-meista",
-        description: "Enterprise software and cloud solutions.",
+        name: "Sweaty Betty",
+        website: "https://www.sweatybetty.com/eu/about-us/the-sweaty-betty-story",
+        description: "Women's activewear and lifestyle brand.",
       },
     });
 
@@ -65,7 +65,7 @@ async function seed() {
     console.log("Creating campaigns...");
     const campaign1 = await prisma.campaign.create({
       data: {
-        companyId: maybelline.id,
+        companyId: swettybetty.id,
         title: "Backend Developer Campaign",
         payoutMin: 50000,
         payoutMax: 90000,
@@ -147,7 +147,7 @@ async function seed() {
     await prisma.review.create({
       data: {
         creatorId: alice.id,
-        companyId: maybelline.id,
+        companyId: swettybetty.id,
         rating: 5,
         comment: "Great company to work with!",
       },

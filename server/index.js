@@ -1,4 +1,4 @@
-require("dotenv").config({ path: __dirname + "/.env" }); // ensure correct .env is loaded
+require("dotenv").config({ path: __dirname + "/.env" }); 
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -21,6 +21,14 @@ app.post("/api/companies", async (req, res) => {
   const data = req.body;
   const created = await prisma.company.create({ data });
   res.status(201).json(created);
+});
+
+// get company website URL by id
+app.get("/api/companywebsite/:id", async (req, res) => {
+  const row = await prisma.company.findUnique({
+    where: {id: Number(req.params.id)}, select: { website: true }
+  });
+  res.json({ website: row.website });
 });
 
 // campaigns with company
