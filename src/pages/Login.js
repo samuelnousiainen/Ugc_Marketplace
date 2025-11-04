@@ -1,69 +1,78 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: value }));
-  }
-
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
-    if (!form.email || !form.password) {
-      setError("Please fill in both fields.");
-      return;
-    }
+    setError('');
+    setLoading(true);
 
-    // TODO: replace with real auth call
-    console.log("Login attempt:", form);
-    // simple success flow: go to home
-    navigate("/");
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+
+      // Save token and user data
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.creator));
+      
+      // Redirect to You page
+      navigate('/you');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <div style={{ maxWidth: 480, margin: "40px auto", color: "var(--white)" }}>
-      <h2 style={{ marginBottom: 8 }}>Login</h2>
+    <div style={{ maxWidth: 400, margin: '40px auto', padding: '20px' }}>
+      <h2>Login</h2>
+      
+      {error && (
+        <div style={{ color: 'red', marginBottom: 16 }}>{error}</div>
+      )}
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-        {error && <div style={{ color: "#ffb4b4" }}>{error}</div>}
-
-        <label style={{ display: "block" }}>
-          <div style={{ fontSize: 14, marginBottom: 6 }}>Email</div>
+      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16 }}>
+        <div>
+          <label>Email</label>
           <input
-            name="email"
             type="email"
             value={form.email}
-            onChange={handleChange}
+            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
             required
-            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid rgba(255,255,255,0.08)", background: "#0b0b0b", color: "var(--white)" }}
+            style={{ width: '100%', padding: 8 }}
           />
-        </label>
+        </div>
 
-        <label style={{ display: "block" }}>
-          <div style={{ fontSize: 14, marginBottom: 6 }}>Password</div>
+        <div>
+          <label>Password</label>
           <input
-            name="password"
             type="password"
             value={form.password}
-            onChange={handleChange}
+            onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
             required
-            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid rgba(255,255,255,0.08)", background: "#0b0b0b", color: "var(--white)" }}
+            style={{ width: '100%', padding: 8 }}
           />
-        </label>
-
-        <div style={{ display: "flex", gap: 8 }}>
-          <button type="submit" className="apply-button" style={{ background: "var(--btn-color)" }}>
-            Sign in
-          </button>
-          <button type="button" onClick={() => navigate(-1)} style={{ background: "transparent", color: "var(--white)", border: "1px solid rgba(255,255,255,0.08)", padding: "8px 12px", borderRadius: 8 }}>
-            Cancel
-          </button>
         </div>
+
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="apply-button"
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
     </div>
   );
