@@ -42,7 +42,9 @@ body {
 .navbar-inner {
   display: flex;
   align-items: center;
-  height: 100%;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
 
 /* make logo the full height of the navbar */
@@ -178,4 +180,8 @@ body {
   min-height: 0;
   overflow: auto;
   color: var(--white);
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
 }
