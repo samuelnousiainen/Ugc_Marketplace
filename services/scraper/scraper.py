@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from api_client import get_company_website
 import re
-from collections import Counter
 
 def extract_visible_text(url):
     # Get page content
@@ -55,5 +53,3 @@ def chunk_text(text, max_len=800):
     if current:
         chunks.append(current.strip())
     return chunks
-
-

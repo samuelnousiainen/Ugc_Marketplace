@@ -26,9 +26,9 @@ app.post("/api/companies", async (req, res) => {
 // get company website URL by id
 app.get("/api/companywebsite/:id", async (req, res) => {
   const row = await prisma.company.findUnique({
-    where: {id: Number(req.params.id)}, select: { website: true }
+    where: {id: Number(req.params.id)}, select: { website: true, name: true }
   });
-  res.json({ website: row.website });
+  res.json({ website: row.website, name: row.name });
 });
 
 // campaigns with company
