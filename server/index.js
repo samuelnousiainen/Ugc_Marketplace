@@ -8,6 +8,8 @@ const prisma = require("./prismaClient");
 const app = express();
 app.use(express.json());
 
+const summarizerBase = process.env.SUMMARIZER_URL || "http://localhost:8000"; // FastAPI service
+
 // health
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
@@ -21,6 +23,15 @@ app.post("/api/companies", async (req, res) => {
   const data = req.body;
   const created = await prisma.company.create({ data });
   res.status(201).json(created);
+});
+
+// get single company by id
+app.get("/api/companies/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const company = await prisma.company.findUnique({
+    where: { id }
+  });
+  res.json(company);
 });
 
 // get company website URL by id
@@ -74,6 +85,23 @@ app.get("/api/creators/:id/campaigns", async (req, res) => {
     const campaigns = await prisma.campaign.findMany({
       where: { applications: { some: { creatorId: id } } },
       include: { company: true },
+    });
+    res.json(campaigns);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load campaigns" });
+  }
+});
+
+// GET campaigns for a company
+app.get("/api/companies/:id/campaigns", async (req, res) => {
+  const companyId = Number(req.params.id);
+  if (Number.isNaN(companyId)) return res.status(400).json({ error: "Invalid company id" });
+  try {
+    const campaigns = await prisma.campaign.findMany({
+      where: { companyId },
+      include: { company: true },
+      orderBy: { createdAt: "desc" }
     });
     res.json(campaigns);
   } catch (err) {
@@ -138,6 +166,38 @@ app.get('/api/me', authMiddleware, async (req, res) => {
     res.json(creator);
   } catch (err) {
     res.status(500).json({ error: 'Failed to load profile' });
+  }
+});
+
+app.get("/api/companies/:id/about", async (req, res) => {
+  const companyId = Number(req.params.id);
+  if (Number.isNaN(companyId)) return res.status(400).json({ error: "Invalid id" });
+
+  try {
+    const company = await prisma.company.findUnique({ where: { id: companyId } });
+    if (!company) return res.status(404).json({ error: "Company not found" });
+
+    if (!company.website) {
+      return res.json({ about: company.description || null });
+    }
+
+    // Call FastAPI summarizer: POST /summarize/{name}?website={url}
+    const name = encodeURIComponent(company.name || "company");
+    const website = encodeURIComponent(company.website);
+    const url = `${summarizerBase}/summarize/${name}?website=${website}`;
+
+    const sResp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" } });
+    if (!sResp.ok) {
+      const txt = await sResp.text();
+      console.error("Summarizer error:", sResp.status, txt);
+      return res.json({ about: company.description || null, warning: "Summarizer failed" });
+    }
+
+    const sJson = await sResp.json();
+    return res.json({ about: sJson.summary || company.description || null });
+  } catch (err) {
+    console.error("Error /api/companies/:id/about", err);
+    return res.status(500).json({ error: "Failed to generate about text" });
   }
 });
 

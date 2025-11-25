@@ -87,6 +87,7 @@ export default function SideBar({ onSelectJob }) {
             title={job.title}
             description={job.requirements || job.description}
             companyName={job.company?.name}
+            companyId={job.company?.id}   // <-- added
             payout={job.currency ? `${job.currency} ${job.payoutMin}–${job.payoutMax}` : undefined}
             onClick={() => handleClick(job)}
           />

@@ -6,6 +6,7 @@ import JobDetails from "./components/JobDetails";
 import ApplyForm from "./pages/ApplyForm";
 import Login from "./pages/Login";
 import You from "./pages/You";
+import Company from "./pages/Company";
 import JobData from "./JobData.json";
 import "./App.css";
 
@@ -40,6 +41,7 @@ function App() {
               <Route path="/apply/:id" element={<ApplyForm />} />
               <Route path="/login" element={<Login />} />
               <Route path="/you" element={<You />} />
+              <Route path="/company/:id" element={<Company />} />
             </Routes>
           </main>
         </div>

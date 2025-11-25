@@ -13,7 +13,7 @@ export default function JobDetails({ job }) {
     if (typeof job === "number" || typeof job === "string") id = Number(job);
     else if (job && job.id) {
       id = job.id;
-      // detect whether job has full fields or just minimal; adjust to your data
+      // detect whether job has full fields or just minimal. adjust to your data
       const hasFull = job.company || job.requirements || job.payoutMin !== undefined;
       if (hasFull) {
         setData(job);
@@ -51,7 +51,12 @@ export default function JobDetails({ job }) {
       <p>Location: {data.location}</p>
       <p>Salary: {data.payoutMin && data.payoutMax ? `${data.currency} ${data.payoutMin}–${data.payoutMax}` : data.salary}</p>
       <p>Posted on: {data.createdAt ? new Date(data.createdAt).toLocaleDateString() : data.datePosted}</p>
-      {data.company && <p>Company: {data.company.name}</p>}
+
+      {data.company ? (
+        <p>Company: <Link to={`/company/${data.company.id}`}>{data.company.name}</Link></p>
+      ) : (
+        data.companyName && <p>Company: {data.companyName}</p>
+      )}
 
       <Link to={`/apply/${data.id}`} state={{ job: data }}>
         <button type="button" className="apply-button" style={{ marginTop: 16 }}>
